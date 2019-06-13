@@ -178,23 +178,22 @@ if [[ -f $unlimited_jce_policy_dist ]]; then
 fi
 
 # Run update-alternatives commands
-if (confirm "Run update-alternatives commands?"); then
-    echo "Running update-alternatives..."
-    declare -a commands=($(ls -1 ${extracted_dirname}/bin))
-    for command in "${commands[@]}"; do
-        command_path=$extracted_dirname/bin/$command
-        if [[ -x $command_path ]]; then
-            update-alternatives --install "/usr/bin/$command" "$command" "$command_path" 10000
-            update-alternatives --set "$command" "$command_path"
-        fi
-    done
-
-    lib_path=$extracted_dirname/jre/lib/amd64/libnpjp2.so
-    if [[ -d "/usr/lib/mozilla/plugins/" ]] && [[ -f $lib_path ]]; then
-        update-alternatives --install "/usr/lib/mozilla/plugins/libjavaplugin.so" "mozilla-javaplugin.so" "$lib_path" 10000
-        update-alternatives --set "mozilla-javaplugin.so" "$lib_path"
+echo "Running update-alternatives..."
+declare -a commands=($(ls -1 ${extracted_dirname}/bin))
+for command in "${commands[@]}"; do
+    command_path=$extracted_dirname/bin/$command
+    if [[ -x $command_path ]]; then
+        update-alternatives --install "/usr/bin/$command" "$command" "$command_path" 10000
+        update-alternatives --set "$command" "$command_path"
     fi
+done
+
+lib_path=$extracted_dirname/jre/lib/amd64/libnpjp2.so
+if [[ -d "/usr/lib/mozilla/plugins/" ]] && [[ -f $lib_path ]]; then
+    update-alternatives --install "/usr/lib/mozilla/plugins/libjavaplugin.so" "mozilla-javaplugin.so" "$lib_path" 10000
+    update-alternatives --set "mozilla-javaplugin.so" "$lib_path"
 fi
+
 
 # Create system preferences directory
 java_system_prefs_dir="/etc/.java/.systemPrefs"
